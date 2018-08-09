@@ -10,8 +10,9 @@ public class CAndy : CAnimatedSprite
 	private const int STATE_WALKING = 1;
 	private const int STATE_JUMPING = 2;
 	private const int STATE_FALLING = 3;
+    private const int STATE_STAND_WALL = 4;
 
-	private CSprite mRect;
+    private CSprite mRect;
 	private CSprite mRect2;
 
 	// coordenada y que tenia en el frame anterior. Usada para chequear en la horizontal antes que en la vertical...
@@ -202,7 +203,27 @@ public class CAndy : CAnimatedSprite
 				setState (STATE_FALLING);
 				return;
 			}
-		}
+            // NUEVO ESTADO
+
+
+
+            if (isWallLeft(getX(), getY()))
+            {
+                Debug.Log("PARED IZQ 1");
+                // Reposicionar el personaje contra la pared.
+                setX(((mLeftX + 1) * CTileMap.TILE_WIDTH) - X_OFFSET_BOUNDING_BOX);
+                setState(STATE_STAND_WALL);
+                return;
+            }
+            if (isWallRight(getX(), getY()))
+            {
+                Debug.Log("PARED DER 1");
+                // Reposicionar el personaje contra la pared.
+                setX((((mRightX) * CTileMap.TILE_WIDTH) - getWidth()) + X_OFFSET_BOUNDING_BOX);
+                setState(STATE_STAND_WALL);
+                return;
+            }
+        }
 		else if (getState () == STATE_FALLING) 
 		{
 			controlMoveHorizontal ();
@@ -213,10 +234,52 @@ public class CAndy : CAnimatedSprite
 				setState (STATE_STAND);
 				return;
 			}
-		}
+            // NUEVO ESTADO
 
-		// Chequear el paso entre pantallas.
-		controlRooms ();
+
+
+            if (isWallLeft(getX(), getY()))
+            {
+                Debug.Log("PARED IZQ");
+                // Reposicionar el personaje contra la pared.
+                setX(((mLeftX + 1) * CTileMap.TILE_WIDTH) - X_OFFSET_BOUNDING_BOX);
+                setState(STATE_STAND_WALL);
+                return;
+            }
+            if (isWallRight(getX(), getY()))
+            {
+                Debug.Log("PARED DER");
+                // Reposicionar el personaje contra la pared.
+                setX((((mRightX) * CTileMap.TILE_WIDTH) - getWidth()) + X_OFFSET_BOUNDING_BOX);
+                setState(STATE_STAND_WALL);
+                return;
+            }
+
+
+        }
+        else if (getState() == STATE_STAND_WALL)
+        {
+            if (CKeyboard.firstPress(CKeyboard.SPACE))
+            {
+                setState(STATE_JUMPING);
+                return;
+            }
+
+            if (CKeyboard.pressed(CKeyboard.LEFT) && !isWallLeft(getX() - 1, getY()))
+            {
+                setState(STATE_FALLING);
+                return;
+            }
+
+            if (CKeyboard.pressed(CKeyboard.RIGHT) && !isWallRight(getX() + 1, getY()))
+            {
+                setState(STATE_FALLING);
+                return;
+            }
+
+        }
+        // Chequear el paso entre pantallas.
+        controlRooms ();
 	}
 
 	private void controlRooms()
@@ -367,5 +430,10 @@ public class CAndy : CAnimatedSprite
 			initAnimation (16, 22, 12, false);
 			setAccelY (CGameConstants.GRAVITY);
 		}
-	}
+        else if (getState() == STATE_STAND_WALL)
+        {
+
+            gotoAndStop(26);
+        }
+    }
 }
