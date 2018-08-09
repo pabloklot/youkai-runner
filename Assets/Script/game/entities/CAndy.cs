@@ -22,11 +22,11 @@ public class CAndy : CAnimatedSprite
 
 	public CAndy()
 	{
-		setFrames (Resources.LoadAll<Sprite> ("Sprites/andy"));
-		setName ("andy");
+		setFrames (Resources.LoadAll<Sprite> ("Sprites/zorra"));
+		setName ("zorra");
 		setSortingLayerName ("Player");
 
-		setScale (2.0f);
+		//setScale (2.0f);
 
 		setRegistration (CSprite.REG_TOP_LEFT);
 
@@ -317,7 +317,7 @@ public class CAndy : CAnimatedSprite
 		base.render ();
 
 		// MOSTRAR TODA EL AREA DEL DIBUJO.
-		mRect.setXY (getX(), getY());
+		/*mRect.setXY (getX(), getY());
 		mRect.setScaleX(WIDTH);
 		mRect.setScaleY(HEIGHT);
 		mRect.update ();
@@ -330,7 +330,7 @@ public class CAndy : CAnimatedSprite
 		mRect2.setScaleY(HEIGHT - Y_OFFSET_BOUNDING_BOX);
 		mRect2.update ();
 
-		mRect2.render ();
+		mRect2.render ();*/
 	}
 
 	override public void destroy()
@@ -348,22 +348,23 @@ public class CAndy : CAnimatedSprite
 
 		if (getState () == STATE_STAND) 
 		{
-			stopMove ();
-			gotoAndStop (1);
+            stopMove ();
+            //gotoAndStop (1);
+            initAnimation(1, 8, 12, true);
 		} 
 		else if (getState () == STATE_WALKING) 
 		{
-			initAnimation (2, 9, 12, true);
-		}
+            initAnimation(1, 8, 12, true);
+        }
 		else if (getState () == STATE_JUMPING) 
 		{
-			initAnimation (10, 17, 12, false);
-			setVelY (CGameConstants.JUMP_SPEED);
+            initAnimation(9, 15, 12, false);
+            setVelY (CGameConstants.JUMP_SPEED);
 			setAccelY (CGameConstants.GRAVITY);
 		}
 		else if (getState () == STATE_FALLING) 
 		{
-			initAnimation (15, 17, 12, false);
+			initAnimation (16, 22, 12, false);
 			setAccelY (CGameConstants.GRAVITY);
 		}
 	}
