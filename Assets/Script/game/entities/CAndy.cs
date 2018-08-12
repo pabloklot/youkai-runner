@@ -12,6 +12,7 @@ public class CAndy : CAnimatedSprite
 	private const int STATE_FALLING = 3;
     private const int STATE_STAND_WALL = 4;
     private const int STATE_POSITIONING = 5;
+    private const int STATE_ATTACKING = 6;
 
     private CSprite mRect;
 	private CSprite mRect2;
@@ -109,6 +110,11 @@ public class CAndy : CAnimatedSprite
 				setState (STATE_WALKING);
 				return;
 			}
+            if (CKeyboard.firstPress (CKeyboard.LEFT_CTRL))
+            {
+                setState(STATE_ATTACKING);
+                return;
+            }
 		} 
 		else if (getState () == STATE_WALKING) 
 		{
@@ -128,6 +134,11 @@ public class CAndy : CAnimatedSprite
 				setState (STATE_JUMPING);
 				return;
 			}
+            if (CKeyboard.firstPress(CKeyboard.LEFT_CTRL))
+            {
+                setState(STATE_ATTACKING);
+                return;
+            }
 
 			// Si en el pixel de abajo del jugador no hay piso, caemos.
 			if (!isFloor (getX(), getY()+1)) 
@@ -287,6 +298,14 @@ public class CAndy : CAnimatedSprite
                 setState(STATE_STAND);
             }
             Debug.Log("state positioning");
+        }
+        else if (getState() == STATE_ATTACKING)
+        {
+            controlMoveHorizontal();
+                if (this.isEnded())
+            {
+                setState(STATE_STAND);
+            }
         }
             // Chequear el paso entre pantallas.
             controlRooms ();
@@ -449,6 +468,11 @@ public class CAndy : CAnimatedSprite
         {
             stopMove();
             initAnimation(23, 25, 8, false);
+        }
+        else if (getState() == STATE_ATTACKING)
+        {
+ 
+            initAnimation(26, 31, 12, false);
         }
     }
 }
