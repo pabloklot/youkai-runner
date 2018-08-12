@@ -11,6 +11,7 @@ public class CAndy : CAnimatedSprite
 	private const int STATE_JUMPING = 2;
 	private const int STATE_FALLING = 3;
     private const int STATE_STAND_WALL = 4;
+    private const int STATE_POSITIONING = 5;
 
     private CSprite mRect;
 	private CSprite mRect2;
@@ -192,7 +193,7 @@ public class CAndy : CAnimatedSprite
 			if (isFloor(getX(), getY()+1))
 			{
 				setY (mDownY * CTileMap.TILE_HEIGHT - getHeight());
-				setState (STATE_STAND);
+				setState (STATE_POSITIONING);
 				return;
 			}
 
@@ -207,7 +208,7 @@ public class CAndy : CAnimatedSprite
 
 
 
-            if (isWallLeft(getX(), getY()))
+            /*if (isWallLeft(getX(), getY()))
             {
                 Debug.Log("PARED IZQ 1");
                 // Reposicionar el personaje contra la pared.
@@ -222,7 +223,7 @@ public class CAndy : CAnimatedSprite
                 setX((((mRightX) * CTileMap.TILE_WIDTH) - getWidth()) + X_OFFSET_BOUNDING_BOX);
                 setState(STATE_STAND_WALL);
                 return;
-            }
+            }*/
         }
 		else if (getState () == STATE_FALLING) 
 		{
@@ -231,13 +232,13 @@ public class CAndy : CAnimatedSprite
 			if (isFloor(getX(), getY()+1))
 			{
 				setY (mDownY * CTileMap.TILE_HEIGHT - getHeight());
-				setState (STATE_STAND);
+				setState (STATE_POSITIONING);
 				return;
 			}
             // NUEVO ESTADO
 
 
-
+            /*
             if (isWallLeft(getX(), getY()))
             {
                 Debug.Log("PARED IZQ");
@@ -253,7 +254,7 @@ public class CAndy : CAnimatedSprite
                 setX((((mRightX) * CTileMap.TILE_WIDTH) - getWidth()) + X_OFFSET_BOUNDING_BOX);
                 setState(STATE_STAND_WALL);
                 return;
-            }
+            }*/
 
 
         }
@@ -278,8 +279,17 @@ public class CAndy : CAnimatedSprite
             }
 
         }
-        // Chequear el paso entre pantallas.
-        controlRooms ();
+        else if (getState() == STATE_POSITIONING)
+        {
+            controlMoveHorizontal();
+            if (this.isEnded())
+            {
+                setState(STATE_STAND);
+            }
+            Debug.Log("state positioning");
+        }
+            // Chequear el paso entre pantallas.
+            controlRooms ();
 	}
 
 	private void controlRooms()
@@ -434,6 +444,11 @@ public class CAndy : CAnimatedSprite
         {
 
             gotoAndStop(26);
+        }
+        else if (getState() == STATE_POSITIONING)
+        {
+            stopMove();
+            initAnimation(23, 25, 8, false);
         }
     }
 }
