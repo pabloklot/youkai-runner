@@ -13,6 +13,9 @@ public class CAndy : CAnimatedSprite
     private const int STATE_STAND_WALL = 4;
     private const int STATE_POSITIONING = 5;
     private const int STATE_ATTACKING = 6;
+    private const int STATE_SECOND_JUMP = 7;
+    private const int STATE_AIR_ATTACK = 8;
+    
 
     private CSprite mRect;
 	private CSprite mRect2;
@@ -215,6 +218,11 @@ public class CAndy : CAnimatedSprite
 				setState (STATE_FALLING);
 				return;
 			}
+            if (CKeyboard.firstPress(CKeyboard.SPACE))
+            {
+                setState(STATE_SECOND_JUMP);
+                return;
+            }
             // NUEVO ESTADO
 
 
@@ -307,8 +315,29 @@ public class CAndy : CAnimatedSprite
                 setState(STATE_STAND);
             }
         }
-            // Chequear el paso entre pantallas.
-            controlRooms ();
+        else if (getState() == STATE_SECOND_JUMP)
+        {
+            controlMoveHorizontal();
+            if (this.isEnded())
+            {
+                setState(STATE_FALLING);
+            }
+            if (CKeyboard.firstPress(CKeyboard.LEFT_CTRL))
+            {
+                setState(STATE_AIR_ATTACK);
+            }
+
+        }
+        else if (getState() == STATE_AIR_ATTACK)
+        {
+            controlMoveHorizontal();
+            if (isFloor(getX(), getY() + 1))
+            {
+                setState(STATE_POSITIONING);
+            }
+        }
+        // Chequear el paso entre pantallas.
+        controlRooms ();
 	}
 
 	private void controlRooms()
@@ -471,8 +500,19 @@ public class CAndy : CAnimatedSprite
         }
         else if (getState() == STATE_ATTACKING)
         {
- 
             initAnimation(26, 31, 12, false);
+        }
+        else if (getState() == STATE_SECOND_JUMP)
+        {
+            setVelY(CGameConstants.JUMP_SPEED);
+            setAccelY(CGameConstants.GRAVITY);
+            //initAnimation(26, 31, 12, false);
+        }
+        else if (getState() == STATE_AIR_ATTACK)
+        {
+            //setVelY(CGameConstants.JUMP_SPEED);
+            //setAccelY(CGameConstants.GRAVITY);
+            //initAnimation(26, 31, 12, false);
         }
     }
 }
