@@ -223,6 +223,10 @@ public class CAndy : CAnimatedSprite
                 setState(STATE_SECOND_JUMP);
                 return;
             }
+            if (CKeyboard.firstPress(CKeyboard.LEFT_CTRL))
+            {
+                setState(STATE_AIR_ATTACK);
+            }
             // NUEVO ESTADO
 
 
@@ -310,10 +314,53 @@ public class CAndy : CAnimatedSprite
         else if (getState() == STATE_ATTACKING)
         {
             controlMoveHorizontal();
-                if (this.isEnded())
+            if (CKeyboard.pressed(CKeyboard.LEFT))
+            {
+                // Chequear pared a la izquierda.
+                // Si hay pared a la izquierda vamos a stand.
+                if (isWallLeft(getX(), getY()))
+                {
+                    // Reposicionar el personaje contra la pared.
+                    //setX((((int) getX ()/CTileMap.TILE_WIDTH)+1)*CTileMap.TILE_WIDTH);
+                    setX(((mLeftX + 1) * CTileMap.TILE_WIDTH) - X_OFFSET_BOUNDING_BOX);
+
+                    // Carlos version.
+                    //setX (getX()+CTileMap.TILE_WIDTH/(getWidth()-1));
+
+                    setState(STATE_STAND);
+                    return;
+                }
+                else
+                {
+                    // No hay pared, se puede mover.
+                    setVelX(-800);
+                    setFlip(true);
+                }
+            }
+            else
+            {
+                // Chequear pared a la derecha.
+                // Si hay pared a la derecha vamos a stand.
+                if (isWallRight(getX(), getY()))
+                {
+                    // Reposicionar el personaje contra la pared.
+                    setX((((mRightX) * CTileMap.TILE_WIDTH) - getWidth()) + X_OFFSET_BOUNDING_BOX);
+
+                    setState(STATE_STAND);
+                    return;
+                }
+                else
+                {
+                    // No hay pared, se puede mover.
+                    setVelX(800);
+                    setFlip(false);
+                }
+            }
+            if (this.isEnded())
             {
                 setState(STATE_STAND);
             }
+
         }
         else if (getState() == STATE_SECOND_JUMP)
         {
@@ -322,10 +369,10 @@ public class CAndy : CAnimatedSprite
             {
                 setState(STATE_FALLING);
             }
-            if (CKeyboard.firstPress(CKeyboard.LEFT_CTRL))
+            /*if (CKeyboard.firstPress(CKeyboard.LEFT_CTRL))
             {
                 setState(STATE_AIR_ATTACK);
-            }
+            }*/
 
         }
         else if (getState() == STATE_AIR_ATTACK)
@@ -333,7 +380,26 @@ public class CAndy : CAnimatedSprite
             controlMoveHorizontal();
             if (isFloor(getX(), getY() + 1))
             {
-                setState(STATE_POSITIONING);
+                this.stopMove();
+                setState(STATE_WALKING);
+            }
+            if (this.isEnded())
+            {
+                setState(STATE_FALLING);
+            }
+            else
+            {
+                if (CKeyboard.pressed(CKeyboard.LEFT))
+                {
+                    setVelX(-800);
+                    setFlip(true);
+                }
+                else if (CKeyboard.pressed(CKeyboard.RIGHT))
+                {
+                    setVelX(800);
+                    setFlip(false);
+
+                }
             }
         }
         // Chequear el paso entre pantallas.
@@ -394,7 +460,7 @@ public class CAndy : CAnimatedSprite
 		// Chequeamos si podemos movernos.
 		if (!(CKeyboard.pressed (CKeyboard.LEFT) || CKeyboard.pressed (CKeyboard.RIGHT))) 
 		{
-			setVelX (0);
+			//setVelX (0);
 		} 
 		else 
 		{
@@ -500,6 +566,7 @@ public class CAndy : CAnimatedSprite
         }
         else if (getState() == STATE_ATTACKING)
         {
+            //setVelX(800);
             initAnimation(26, 31, 12, false);
         }
         else if (getState() == STATE_SECOND_JUMP)
@@ -512,7 +579,8 @@ public class CAndy : CAnimatedSprite
         {
             //setVelY(CGameConstants.JUMP_SPEED);
             //setAccelY(CGameConstants.GRAVITY);
-            //initAnimation(26, 31, 12, false);
+            setVelX(800);
+            initAnimation(26, 31, 12, false);
         }
     }
 }
