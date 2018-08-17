@@ -365,7 +365,7 @@ public class CAndy : CAnimatedSprite
 		// Chequeamos si podemos movernos.
 		if (!(CKeyboard.pressed (CKeyboard.LEFT) || CKeyboard.pressed (CKeyboard.RIGHT))) 
 		{
-			setVelX (0);
+			//setVelX (0);
 		} 
 		else 
 		{
@@ -467,11 +467,12 @@ public class CAndy : CAnimatedSprite
         else if (getState() == STATE_POSITIONING)
         {
             stopMove();
+            
             initAnimation(23, 25, 8, false);
         }
         else if (getState() == STATE_ATTACKING)
         {
- 
+            setVelX(2000);
             initAnimation(26, 31, 12, false);
         }
     }
