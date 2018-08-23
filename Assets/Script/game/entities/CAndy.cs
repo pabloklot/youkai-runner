@@ -567,9 +567,7 @@ public class CAndy : CAnimatedSprite
         }
         else if (getState() == STATE_ATTACKING)
         {
-<<<<<<< HEAD
             setVelX(2000);
-=======
             //setVelX(800);
             initAnimation(26, 31, 12, false);
         }
@@ -584,7 +582,6 @@ public class CAndy : CAnimatedSprite
             //setVelY(CGameConstants.JUMP_SPEED);
             //setAccelY(CGameConstants.GRAVITY);
             setVelX(800);
->>>>>>> 3bcacea26a419efe47040cadded0356d2ddf746e
             initAnimation(26, 31, 12, false);
         }
     }
