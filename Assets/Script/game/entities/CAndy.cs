@@ -15,7 +15,14 @@ public class CAndy : CAnimatedSprite
     private const int STATE_ATTACKING = 6;
     private const int STATE_SECOND_JUMP = 7;
     private const int STATE_AIR_ATTACK = 8;
-    
+    private const int STATE_JUMPING_WALL_TO_RIGHT = 9;
+    private const int STATE_FALLING_WALL_TO_RIGHT = 10;
+
+    private const int STATE_JUMPING_WALL_TO_LEFT = 11;
+    private const int STATE_FALLING_WALL_TO_LEFT = 12;
+    private const int STATE_STAND_WALL_LEFT = 13;
+    private const int STATE_STAND_WALL_RIGHT = 14;
+
 
     private CSprite mRect;
 	private CSprite mRect2;
@@ -231,24 +238,26 @@ public class CAndy : CAnimatedSprite
 
 
 
-            /*if (isWallLeft(getX(), getY()))
+            if (isWallLeft(getX() - 1, getY()))
             {
                 Debug.Log("PARED IZQ 1");
                 // Reposicionar el personaje contra la pared.
                 setX(((mLeftX + 1) * CTileMap.TILE_WIDTH) - X_OFFSET_BOUNDING_BOX);
-                setState(STATE_STAND_WALL);
+                setState(STATE_STAND_WALL_LEFT);
                 return;
             }
-            if (isWallRight(getX(), getY()))
+            if (isWallRight(getX() + 1, getY()))
             {
                 Debug.Log("PARED DER 1");
                 // Reposicionar el personaje contra la pared.
                 setX((((mRightX) * CTileMap.TILE_WIDTH) - getWidth()) + X_OFFSET_BOUNDING_BOX);
-                setState(STATE_STAND_WALL);
+                setState(STATE_STAND_WALL_RIGHT);
                 return;
-            }*/
+            }
         }
-		else if (getState () == STATE_FALLING) 
+        
+        
+        else if (getState () == STATE_FALLING) 
 		{
 			controlMoveHorizontal ();
 
@@ -261,25 +270,283 @@ public class CAndy : CAnimatedSprite
             // NUEVO ESTADO
 
 
-            /*
-            if (isWallLeft(getX(), getY()))
+            if (isWallLeft(getX() - 1, getY()))
             {
                 Debug.Log("PARED IZQ");
                 // Reposicionar el personaje contra la pared.
                 setX(((mLeftX + 1) * CTileMap.TILE_WIDTH) - X_OFFSET_BOUNDING_BOX);
-                setState(STATE_STAND_WALL);
+                setState(STATE_STAND_WALL_LEFT);
                 return;
             }
-            if (isWallRight(getX(), getY()))
+            if (isWallRight(getX() + 1, getY()))
             {
                 Debug.Log("PARED DER");
                 // Reposicionar el personaje contra la pared.
                 setX((((mRightX) * CTileMap.TILE_WIDTH) - getWidth()) + X_OFFSET_BOUNDING_BOX);
-                setState(STATE_STAND_WALL);
+                setState(STATE_STAND_WALL_RIGHT);
+                return;
+            }
+
+
+        }
+        else if (getState() == STATE_STAND_WALL_LEFT)
+        {
+
+            if (isRoof(getX(), getY() - 1))
+            {
+                //setY((mUpY + 1) * CTileMap.TILE_HEIGHT);
+                setY((mUpY + 1));
+
+
+            }
+
+
+            /*if (CKeyboard.firstPress(CKeyboard.SPACE))
+            {
+                setState(STATE_JUMPING);
+                return;
+            }
+
+            if (CKeyboard.pressed(CKeyboard.LEFT) && (  !isWallLeft(getX() - 1, getY()) && (!isFloor(getX(), getY() + 1))))
+            {
+                setState(STATE_FALLING);
+                return;
+            }
+
+            if (CKeyboard.pressed(CKeyboard.RIGHT) && ( !isWallRight(getX() + 1, getY()) && (!isFloor(getX(), getY() + 1))) )
+            {
+                setState(STATE_FALLING);
+                return;
+            }*/
+
+            // En stand no deberia pasar nunca que quede metido en una pared.
+            // Si estamos en una pared, corregirnos. 
+            if (isWallLeft(getX(), getY()))
+            {
+                // Reposicionar el personaje contra la pared.
+                setX(((mLeftX + 1) * CTileMap.TILE_WIDTH) - X_OFFSET_BOUNDING_BOX);
+            }
+            if (isWallRight(getX(), getY()))
+            {
+                // Reposicionar el personaje contra la pared.
+                setX((((mRightX) * CTileMap.TILE_WIDTH) - getWidth()) + X_OFFSET_BOUNDING_BOX);
+            }
+
+
+            // Si en el pixel de abajo del jugador no hay piso, caemos.
+            /*if (!isFloor (getX(), getY()+1)) 
+			{
+				setState (STATE_FALLING);
+				return;
+			}*/
+
+            if (CKeyboard.firstPress(CKeyboard.SPACE))
+            {
+                setState(STATE_JUMPING_WALL_TO_RIGHT);
+                return;
+            }
+
+            /*if (CKeyboard.pressed(CKeyboard.LEFT) && !isWallLeft(getX() - 1, getY()))
+            {
+                //setState (STATE_WALKING);
+                setState(STATE_FALLING_WALL_TO_LEFT);
+
+                return;
+            }*/
+
+            if (CKeyboard.pressed(CKeyboard.RIGHT) && !isWallRight(getX() + 1, getY()))
+            {
+                //setState (STATE_WALKING);
+                setState(STATE_FALLING_WALL_TO_RIGHT);
+                return;
+            }
+
+
+
+
+
+        }
+
+        else if (getState() == STATE_JUMPING_WALL_TO_RIGHT)
+        {
+            controlMoveHorizontal();
+
+            if (isFloor(getX(), getY() + 1))
+            {
+                setY(mDownY * CTileMap.TILE_HEIGHT - getHeight());
+                setState(STATE_STAND);
+                return;
+            }
+
+            if (isRoof(getX(), getY() - 1))
+            {
+                setY((mUpY + 1) * CTileMap.TILE_HEIGHT);
+                setVelY(0);
+                setState(STATE_FALLING_WALL_TO_RIGHT);
+                return;
+            }
+
+            if (isWallRight(getX() + 1, getY()))
+            {
+                Debug.Log("PARED DER 1");
+                // Reposicionar el personaje contra la pared.
+                setX((((mRightX) * CTileMap.TILE_WIDTH) - getWidth()) + X_OFFSET_BOUNDING_BOX);
+                setState(STATE_STAND_WALL_RIGHT);
+                return;
+            }
+        }
+
+        else if (getState() == STATE_FALLING_WALL_TO_RIGHT)
+        {
+            controlMoveHorizontal();
+
+            if (isFloor(getX(), getY() + 1))
+            {
+                setY(mDownY * CTileMap.TILE_HEIGHT - getHeight());
+                setState(STATE_STAND);
+                return;
+            }
+
+            if (isWallRight(getX() + 1, getY()))
+            {
+                Debug.Log("PARED DER 1");
+                // Reposicionar el personaje contra la pared.
+                setX((((mRightX) * CTileMap.TILE_WIDTH) - getWidth()) + X_OFFSET_BOUNDING_BOX);
+                setState(STATE_STAND_WALL_RIGHT);
+                return;
+            }
+        }
+
+
+
+        else if (getState() == STATE_STAND_WALL_RIGHT)
+        {
+
+            if (isRoof(getX(), getY() - 1))
+            {
+                //setY((mUpY + 1) * CTileMap.TILE_HEIGHT);
+                setY((mUpY + 1));
+
+
+            }
+
+
+
+            /*if (CKeyboard.firstPress(CKeyboard.SPACE))
+            {
+                setState(STATE_JUMPING);
+                return;
+            }
+
+            if (CKeyboard.pressed(CKeyboard.LEFT) && (  !isWallLeft(getX() - 1, getY()) && (!isFloor(getX(), getY() + 1))))
+            {
+                setState(STATE_FALLING);
+                return;
+            }
+
+            if (CKeyboard.pressed(CKeyboard.RIGHT) && ( !isWallRight(getX() + 1, getY()) && (!isFloor(getX(), getY() + 1))) )
+            {
+                setState(STATE_FALLING);
+                return;
+            }*/
+
+            // En stand no deberia pasar nunca que quede metido en una pared.
+            // Si estamos en una pared, corregirnos. 
+            if (isWallLeft(getX(), getY()))
+            {
+                // Reposicionar el personaje contra la pared.
+                setX(((mLeftX + 1) * CTileMap.TILE_WIDTH) - X_OFFSET_BOUNDING_BOX);
+            }
+            if (isWallRight(getX(), getY()))
+            {
+                // Reposicionar el personaje contra la pared.
+                setX((((mRightX) * CTileMap.TILE_WIDTH) - getWidth()) + X_OFFSET_BOUNDING_BOX);
+            }
+
+
+            // Si en el pixel de abajo del jugador no hay piso, caemos.
+            /*if (!isFloor (getX(), getY()+1)) 
+			{
+				setState (STATE_FALLING);
+				return;
+			}*/
+
+            if (CKeyboard.firstPress(CKeyboard.SPACE))
+            {
+                setState(STATE_JUMPING_WALL_TO_LEFT);
+                return;
+            }
+
+            if (CKeyboard.pressed(CKeyboard.LEFT) && !isWallLeft(getX() - 1, getY()))
+            {
+                //setState (STATE_WALKING);
+                setState(STATE_FALLING_WALL_TO_LEFT);
+
+                return;
+            }
+
+            /*if (CKeyboard.pressed(CKeyboard.RIGHT) && !isWallRight(getX() + 1, getY()))
+            {
+                //setState (STATE_WALKING);
+                setState(STATE_FALLING_WALL_TO_RIGHT);
                 return;
             }*/
 
 
+
+
+
+        }
+
+        else if (getState() == STATE_JUMPING_WALL_TO_LEFT)
+        {
+            controlMoveHorizontal();
+
+            if (isFloor(getX(), getY() + 1))
+            {
+                setY(mDownY * CTileMap.TILE_HEIGHT - getHeight());
+                setState(STATE_STAND);
+                return;
+            }
+
+            if (isRoof(getX(), getY() - 1))
+            {
+                setY((mUpY + 1) * CTileMap.TILE_HEIGHT);
+                setVelY(0);
+                setState(STATE_FALLING_WALL_TO_LEFT);
+                return;
+            }
+
+            if (isWallLeft(getX() - 1, getY()))
+            {
+                Debug.Log("PARED izq 1");
+                // Reposicionar el personaje contra la pared.
+                //setX((((mRightX) * CTileMap.TILE_WIDTH) - getWidth()) + X_OFFSET_BOUNDING_BOX);
+                setX(((mLeftX + 1) * CTileMap.TILE_WIDTH) - X_OFFSET_BOUNDING_BOX);
+                setState(STATE_STAND_WALL_LEFT);
+                return;
+            }
+        }
+
+        else if (getState() == STATE_FALLING_WALL_TO_LEFT)
+        {
+            controlMoveHorizontal();
+
+            if (isFloor(getX(), getY() + 1))
+            {
+                setY(mDownY * CTileMap.TILE_HEIGHT - getHeight());
+                setState(STATE_STAND);
+                return;
+            }
+
+            if (isWallLeft(getX() - 1, getY()))
+            {
+                Debug.Log("PARED IZQ 1");
+                // Reposicionar el personaje contra la pared.
+                setX(((mLeftX + 1) * CTileMap.TILE_WIDTH) - X_OFFSET_BOUNDING_BOX);
+                setState(STATE_STAND_WALL_LEFT);
+                return;
+            }
         }
         else if (getState() == STATE_STAND_WALL)
         {
@@ -389,12 +656,12 @@ public class CAndy : CAnimatedSprite
             }
             else
             {
-                if (CKeyboard.pressed(CKeyboard.LEFT))
+                /*if (CKeyboard.pressed(CKeyboard.LEFT))
                 {
                     setVelX(-800);
                     setFlip(true);
-                }
-                else if (CKeyboard.pressed(CKeyboard.RIGHT))
+                }*/
+                if (CKeyboard.pressed(CKeyboard.RIGHT))
                 {
                     setVelX(800);
                     setFlip(false);
@@ -402,9 +669,15 @@ public class CAndy : CAnimatedSprite
                 }
             }
         }
+
         // Chequear el paso entre pantallas.
         controlRooms ();
-	}
+        /*CGameObject item = CItemManager.inst().collidesAndy(this);
+        if (item != null)
+        {
+            item.hit();
+        }*/
+    }
 
 	private void controlRooms()
 	{
@@ -581,8 +854,49 @@ public class CAndy : CAnimatedSprite
         {
             //setVelY(CGameConstants.JUMP_SPEED);
             //setAccelY(CGameConstants.GRAVITY);
-            setVelX(800);
+            setVelX(1000);
+            setVelY(0);
+            setAccelY(0);
             initAnimation(26, 31, 12, false);
+        }
+        else if (getState() == STATE_STAND_WALL_LEFT)
+        {
+            stopMove();
+            //setVelY(-CGameConstants.JUMP_SPEED/5);
+            gotoAndStop(26);
+        }
+        else if (getState() == STATE_JUMPING_WALL_TO_RIGHT)
+        {
+            //initAnimation (10, 17, 12, false);
+            initAnimation(8, 16, 12, false);
+            setVelY(CGameConstants.JUMP_SPEED);
+            setAccelY(CGameConstants.GRAVITY);
+        }
+        else if (getState() == STATE_FALLING_WALL_TO_RIGHT)
+        {
+            //initAnimation (15, 17, 12, false);
+            initAnimation(17, 25, 12, false);
+            setAccelY(CGameConstants.GRAVITY);
+        }
+
+        else if (getState() == STATE_STAND_WALL_RIGHT)
+        {
+            stopMove();
+            //setVelY(-CGameConstants.JUMP_SPEED/5);
+            gotoAndStop(26);
+        }
+        else if (getState() == STATE_JUMPING_WALL_TO_LEFT)
+        {
+            //initAnimation (10, 17, 12, false);
+            initAnimation(8, 16, 12, false);
+            setVelY(CGameConstants.JUMP_SPEED);
+            setAccelY(CGameConstants.GRAVITY);
+        }
+        else if (getState() == STATE_FALLING_WALL_TO_LEFT)
+        {
+            //initAnimation (15, 17, 12, false);
+            initAnimation(17, 25, 12, false);
+            setAccelY(CGameConstants.GRAVITY);
         }
     }
 }
