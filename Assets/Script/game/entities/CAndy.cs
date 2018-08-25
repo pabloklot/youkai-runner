@@ -848,7 +848,7 @@ public class CAndy : CAnimatedSprite
         {
             setVelY(CGameConstants.JUMP_SPEED);
             setAccelY(CGameConstants.GRAVITY);
-            //initAnimation(26, 31, 12, false);
+            initAnimation(32, 40, 12, false);
         }
         else if (getState() == STATE_AIR_ATTACK)
         {
