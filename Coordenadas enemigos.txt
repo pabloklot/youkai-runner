@@ -1,0 +1,10 @@
+
+CScorpion s = new CScorpion (CScorpion.TYPE_DONT_FALL);
+        //s.setXY (550, 300);
+        s.setXY(7000, 0);
+        CEnemyManager.inst ().add (s);
+
+	s = new CScorpion (CScorpion.TYPE_DONT_FALL);
+        //s.setXY (700, 300);
+        s.setXY(14000, 150);
+        CEnemyManager.inst ().add (s);
